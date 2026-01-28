@@ -73,9 +73,9 @@
 
     private async Task HandleUsernameChange(string value)
     {
-        username = value;
+        register.Username = value;
 
-        if (username.Length < 3)
+        if (register.Username.Length < 3)
         {
             statusUserMessage = "Login za krótki";
             statusUserClass = "text-danger";
@@ -89,7 +89,7 @@
 
         await InvokeAsync(() =>
         {
-            if (username.ToLower() == "admin")
+            if (register.Username.ToLower() == "admin")
             {
                 statusUserMessage = "Nazwa 'admin' jest zajęta!";
                 statusUserClass = "text-danger";
@@ -108,10 +108,10 @@
 
     private void HandlePasswordChange(string value)
     {
-        password = value;
+        register.Password = value;
 
 
-        if (password.Length < 6)
+        if (register.Password.Length < 6)
         {
             statusPasswordMessage = "Hasło za krótkie";
             statusPasswordClass = "text-danger";
