@@ -3,7 +3,7 @@
 <dialog id="@Id">
     <h3>@Title</h3>
     <div>
-        @Content
+        @ChildContent
     </div>
     <button class="btn btn-success" @onclick="CloseAction">Zamknij</button>
 </dialog>
@@ -14,10 +14,13 @@
 
     [Parameter]
     public string Id { get; set; } = "";
+
     [Parameter]
     public string Title { get; set; } = "";
     [Parameter]
-    public RenderFragment? Content { get; set; }
+
+    public RenderFragment? ChildContent { get; set; }
+
     [Parameter] public EventCallback<string> CloseActionChanged { get; set; }
 
 
