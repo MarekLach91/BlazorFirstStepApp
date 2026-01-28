@@ -1,0 +1,29 @@
+﻿@inject IJSRuntime JS
+
+<dialog id="@Id">
+    <h3>@Title</h3>
+    <div>
+        @ChildContent
+    </div>
+    <button class="btn btn-success" @onclick="CloseAction">Zamknij</button>
+</dialog>
+
+
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = "";
+    [Parameter]
+    public string Title { get; set; } = "";
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter] public EventCallback<string> CloseActionChanged { get; set; }
+
+
+    private async Task CloseAction()
+    {
+        await JS.InvokeVoidAsync("myScripts.closeModal", Id);
+        await CloseActionChanged.InvokeAsync(); 
+    }
+}

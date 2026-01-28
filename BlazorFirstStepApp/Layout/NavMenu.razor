@@ -1,0 +1,46 @@
+﻿<div class="top-row navbar-dark">
+    <div class="container-fluid navbar-style px-0 mx-0">
+        <a class="navbar-brand " href="/">
+            <img src="files/brandFiles/eSklep24.png" width="240" height="56" />
+        </a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="register">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Rejestracja
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="component/1">
+                <span class="bi bi-cash-stack-nav-menu" aria-hidden="true"></span> Historia transakcji
+            </NavLink>
+        </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="componentForm">
+                <span class="bi bi-journal-plus-nav-menu" aria-hidden="true"></span> Formularz
+                </NavLink>
+            </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

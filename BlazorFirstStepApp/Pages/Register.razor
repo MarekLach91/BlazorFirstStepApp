@@ -1,0 +1,153 @@
+﻿@page "/register"
+@inject IJSRuntime registerJS
+@inject NavigationManager Nav
+
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle> Utwórz konto</PageTitle>
+
+
+<h1> Utwórz konto</h1>
+
+
+
+<div class="col-6">
+    <h5> Wybierz nazwę użytkownika:</h5>
+    <div class="form-control my-2">
+        <EditForm Model="@register" OnValidSubmit="SuccesAction" OnInvalidSubmit="ErrorAction">
+            <DataAnnotationsValidator />
+            <CustomInputComponent Label="Login" Value="@register.Username" OnChanged="HandleUsernameChange" />
+
+            <p class="mt-3">
+                @if (isChecking)
+                {
+                    <span class="text-info">Sprawdzanie dostępności...</span>
+                }
+
+                else if (!string.IsNullOrEmpty(statusUserMessage))
+                {
+                    <span class="@statusUserClass">@statusUserMessage</span>
+                }
+            </p>
+            <CustomInputComponent Label="Hasło" Value="@register.Password" OnChanged="HandlePasswordChange" />
+            <p class="mt-3 @statusPasswordClass"> @statusPasswordMessage</p>
+            <button class="btn btn-primary mt-3" type="submit"> Zarejestruj się</button>
+        </EditForm>
+    </div>
+
+
+
+</div>
+
+
+<DialogComponent Id="registerValidSuccess" Title="Rejestracja zakończona" CloseActionChanged="CloseDialog">
+    <p> Pomyślnie założyłeś konto</p>
+    <p> Gratulujmy!</p>
+</DialogComponent>
+
+<DialogComponent Id="registerValidSuccess" Title="Rejestracja zakończona" CloseActionChanged="CloseDialog">
+    <p> Pomyślnie założyłeś konto</p>
+    <p> Gratulujmy!</p>
+</DialogComponent>
+
+<DialogComponent Id="registerValidError" Title="Błąd rejestracji" CloseActionChanged="CloseErrorDialog">
+    <p>Popraw dane w formularzu</p>
+</DialogComponent>
+
+@code {
+
+    public class RegisterModel
+    {
+
+        [Required(ErrorMessage = "Login jest wymagany")]
+        public string Username { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Hasło jest wymagane")]
+        public string Password { get; set; } = string.Empty;
+    }
+
+    public RegisterModel register { get; set; } = new RegisterModel();
+
+    private string username = "";
+    private string password = "";
+    private string statusUserMessage = "";
+    private string statusPasswordMessage = "";
+    private string statusUserClass = "";
+    private string statusPasswordClass = "";
+    private bool isChecking = false;
+
+
+    private async Task HandleUsernameChange(string value)
+    {
+        username = value;
+
+        if (username.Length < 3)
+        {
+            statusUserMessage = "Login za krótki";
+            statusUserClass = "text-danger";
+            return;
+        }
+
+        isChecking = true;
+        await Task.Delay(500);
+
+
+
+        await InvokeAsync(() =>
+        {
+            if (username.ToLower() == "admin")
+            {
+                statusUserMessage = "Nazwa 'admin' jest zajęta!";
+                statusUserClass = "text-danger";
+            }
+            else
+            {
+                statusUserMessage = $"Nazwa '{username}' jest dostępna.";
+                statusUserClass = "text-success";
+            }
+            isChecking = false;
+
+        });
+    }
+
+
+
+    private void HandlePasswordChange(string value)
+    {
+        password = value;
+
+
+        if (password.Length < 6)
+        {
+            statusPasswordMessage = "Hasło za krótkie";
+            statusPasswordClass = "text-danger";
+        }
+
+        else
+        {
+            statusPasswordMessage = "Hasło poprawne";
+            statusPasswordClass = "text-success";
+        }
+    }
+
+    public async Task SuccesAction()
+    {
+        await registerJS.InvokeVoidAsync("myScripts.showModal", "registerValidSuccess");
+    }
+
+    private async Task CloseDialog()
+    {
+        await registerJS.InvokeVoidAsync("myScripts.closeModal", "registerValidSuccess");
+        Nav.NavigateTo("/");
+    }
+
+    public async Task ErrorAction()
+    {
+        await registerJS.InvokeVoidAsync("myScripts.showModal", "registerValidError");
+    }
+
+    public async Task CloseErrorDialog()
+    {
+        await registerJS.InvokeVoidAsync("myScripts.closeModal", "registerValidError");
+    }
+}

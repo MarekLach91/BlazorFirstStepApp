@@ -1,0 +1,17 @@
+﻿@using BlazorFirstStepApp.Models
+
+<div class="container @Theme.BgClass p-3">
+    <h4>Widok transakcji</h4>
+    <p>Aktualnie wybrany motyw: @(Theme.IsDarkMode ? "Dark" : "Light")</p>
+
+    <button class="btn @Theme.ButtonClass">Akcja</button>
+</div>
+
+@code {
+
+    @code {
+    [CascadingParameter]
+    public ThemeSettings Theme { get; set; }
+}
+
+}

@@ -1,0 +1,146 @@
+﻿@page "/component/{Id:int}"
+@inject IJSRuntime MyJSRuntime
+@inject NavigationManager Nav
+
+
+<PageTitle>Historia zakupów</PageTitle>
+
+<h3 class="mb-5">Historia transakcji Kontrahenta o id: @Id </h3>
+
+
+<div class="mb-5">
+    <button class="btn btn-primary" @onclick="ShowDataTransaction">Pobierz dane</button>
+    <button class="btn btn-primary" @onclick="GetOderCustomer">Zmień kontrahenta</button>
+</div>
+
+@if (showErrorMessage == true)
+{
+    <ErrorComponent ErrorMessage="@errorMessage" />
+}
+
+@if (showLoader == true)
+{
+    <div class="text-center">
+        <div class="mt-5">
+            <div class="spinner-border" role="status"></div>
+            <p>Ładowanie danych...</p>
+        </div>
+    </div>
+}
+
+
+@if (FilteredTransactions != null)
+{
+    <div class="my-3">
+        <input type="text"
+               class="form-control"
+               placeholder="Szukaj"
+               @bind="searchTerm"
+               @bind:event="oninput" />
+        @if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            <div class="mt-2">Znaleziono: @(FilteredTransactions?.Count ?? 0) transakcji.</div>
+        }
+    </div>
+    <div class="mb-2">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Imię i Nazwisko</th>
+                    <th>Data</th>
+                    <th>Kwota</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in FilteredTransactions)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.FirstName @item.LastName</td>
+                        <td>@item.Date.ToShortDateString()</td>
+                        <td>@item.Amount.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+
+
+    public bool showLoader { get; set; } = false;
+
+    public string errorMessage { get; set; } = string.Empty;
+
+    public bool showErrorMessage { get; set; } = false;
+
+    public string? urlId { get; set; } = string.Empty;
+
+    public class Transaction
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime Date { get; set; }
+        public decimal Amount { get; set; }
+    }
+
+    private List<Transaction>? transactions;
+
+
+    private string searchTerm = "";
+
+    private List<Transaction>? FilteredTransactions =>
+        string.IsNullOrWhiteSpace(searchTerm) ? transactions
+            : transactions?.Where(t =>
+                t.FirstName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                t.LastName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || t.Amount.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || t.Date.ToString("d").Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+              ).ToList();
+
+
+
+    public async Task ShowDataTransaction()
+    {
+        if (transactions == null)
+        {
+
+
+            showLoader = true;
+
+            try
+            {
+                await Task.Delay(2000);
+            }
+            finally
+            {
+                showLoader = false;
+                transactions = await MyJSRuntime.InvokeAsync<List<Transaction>>("myScripts.getTransactions");
+            }
+
+        }
+        else
+        {
+            errorMessage = "Dane zostały już załadowane. Odśwież stronę, aby ponownie pobrać dane.";
+            showErrorMessage = true;
+        }
+    }
+
+    private async Task GetOderCustomer()
+    {
+
+        urlId = await MyJSRuntime.InvokeAsync<string>("prompt", "Podaj Id innego kontrahenta do którego chcesz się przełączyć");
+
+        if (!string.IsNullOrWhiteSpace(urlId))
+        {
+            Nav.NavigateTo($"/component/{urlId}");
+        }
+    }
+
+}

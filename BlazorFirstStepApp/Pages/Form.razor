@@ -1,0 +1,190 @@
+@page "/componentForm"
+@inject IJSRuntime formJS
+@inject NavigationManager Nav
+
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Dane do zakupu</PageTitle>
+
+<h2 class="mb-3">Dane do zakupu</h2>
+
+
+<div class="col-6">
+<EditForm Model="@quest" OnValidSubmit="SuccesAction" OnInvalidSubmit="HandleInvalidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="mt-3 form-control">
+        <label for="Name" class="form-label">Imiê:</label>
+        <InputText id="Name" @bind-Value="quest.Name" class="form-control"/>
+        <ValidationMessage For="() => quest.Name" />
+     </div>
+    <div class="mt-3 form-control">
+        <label for="Surname" class="form-label">Nazwisko:</label>
+         <InputText id="Surname" @bind-Value="quest.Surname" class="form-control" />
+        <ValidationMessage For="() => quest.Surname" />
+    </div>
+    <div class="mt-3 form-control">
+        <label for="Street" class="form-label">Ulica:</label>
+            <InputText id="Street" @bind-Value="quest.Street" class="form-control" />
+        <ValidationMessage For="() => quest.Street" />
+    </div>
+    <div class="mt-3 form-control">
+        <label for="StreetNumber" class="form-label">Nr budynku:</label>
+         <InputText id="StreetNumber" @bind-Value="quest.StreetNumber" class="form-control" />
+        <ValidationMessage For="() => quest.StreetNumber" />
+    </div>
+    <div class="mt-3 form-control">
+        <label for="UnitNumber" class="form-label">Nr lokalu:</label>
+        <InputText id="UnitNumber" @bind-Value="quest.UnitNumber" class="form-control" />
+        <ValidationMessage For="() => quest.UnitNumber" />
+    </div>
+    <div class="mt-3 form-control">
+        <label for="ZipCode" class="form-label">Kod-pocztowy:</label>
+        <InputText id="ZipCode" @bind-Value="quest.ZipCode" class="form-control" />
+        <ValidationMessage For="() => quest.ZipCode" />
+    </div>
+    <div class="mt-3 form-control">
+        <label for="City" class="form-label">Miejscowoœæ:</label>
+         <InputText id="City" @bind-Value="quest.City" class="form-control" />
+        <ValidationMessage For="() => quest.City" />
+    </div>
+    <div class="mt-3 form-control">
+        <label for="Email" class="form-label">E-mail:</label>
+        <InputText id="Email" @bind-Value="quest.Email" class="form-control" />
+        <ValidationMessage For="() => quest.Email" />
+    </div>
+    <div class="mt-3 form-control">
+        <label for="PhoneNumber" class="form-label">Nr telefon:</label>
+        <InputText id="PhoneNumber" @bind-Value="quest.PhoneNumber" class="form-control" />
+        <ValidationMessage For="() => quest.PhoneNumber" />
+    </div>
+    <div class="mt-3 form-check">
+ 
+            <label for="AcceptTerms" class="form-check-label">Akceptujê regulamin - </label><a href="/files/pdfFiles/Regulamin.pdf" class="text-decoration-none" target="_blank">Treœæ regulamin</a>
+        <InputCheckbox id="AcceptTerms" @bind-Value="quest.AcceptTerms" class="form-check-input" />
+        <ValidationMessage For="() => quest.AcceptTerms" />
+    </div>
+    <div>
+        <button class="btn btn-primary mt-5 mb-5" type="submit">
+                @if (isSubmitting)
+                {
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span> Wysy³anie...</span>
+                }
+                else
+                {
+                    <span>Zapisz dane</span>
+                }
+        </button>
+    </div>
+  
+</EditForm>
+</div>
+
+<DialogComponent Id="dialogValidSuccess" Title="Formularz wys³any" CloseActionChanged="CloseDialogSuccess">
+    <p>Twoje zamówienie zosta³o z³o¿one</p>
+    <p>Szczegó³y zamówienia wys³aliœmy na @quest.Email</p>
+</DialogComponent>
+<dialog id="">
+        <h3>Formularz wys³any</h3>
+        <p>Twoje zamówienie zosta³o z³o¿one</p>
+        <p>Szczegó³y zamówienia wys³aliœmy na @quest.Email</p>
+        <button class="btn btn-success" @onclick="CloseDialogSuccess">Zamknij</button>
+</dialog>
+
+<DialogComponent Id="dialogInvalid" Title="B³¹d formularza" CloseActionChanged="CloseDialog">
+    <p>Masz b³êdne dane w formularzu</p>
+    <p>Popraw i spróbuj ponownie</p>
+</DialogComponent>
+
+
+
+
+
+@code
+{
+
+
+    public class QuestData
+    {
+        [Required(ErrorMessage = "Pole jest wymagane")]
+        [MinLength(2, ErrorMessage = "Minimalna iloœæ znaków to 2")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Pole jest wymagane")]
+        [MinLength(2, ErrorMessage = "Minimalna iloœæ znaków to 2")]
+        public string? Surname { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Pole jest wymagane")]
+        [MinLength(2, ErrorMessage = "Minimalna iloœæ znaków to 2")]
+        public string Street { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Pole jest wymagane")]
+        public string StreetNumber { get; set; } = string.Empty;
+
+
+        public string UnitNumber { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Pole jest wymagane")]
+        [RegularExpression(@"^\d{2}-\d{3}$", ErrorMessage = "Nieprawid³owy format kodu pocztowego (wymagany xx-xxx).")]
+        public string ZipCode { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Pole jest wymagane")]
+        public string City { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Pole jest wymagane")]
+        [Phone(ErrorMessage = "Nieprawid³owy numer telefonu.")]
+        public string PhoneNumber { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Pole jest wymagane")]
+        [EmailAddress(ErrorMessage = "Nieprawid³owy adres e-mail.")]
+        public string Email { get; set; } = string.Empty;
+
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Musisz zaakceptowaæ regulamin.")]
+        public bool AcceptTerms { get; set; }
+
+
+    }
+
+    public QuestData quest { get; set; } = new();
+
+
+    public bool isSubmitting { get; set; } = false;
+
+    public async Task SuccesAction()
+    {
+        isSubmitting = true;
+
+
+        try
+        {
+            await Task.Delay(3000); 
+        }
+        finally
+        {
+
+            isSubmitting = false;  
+            await formJS.InvokeVoidAsync("myScripts.showModal", "dialogValidSuccess");
+        }
+
+    }
+ 
+    private async Task CloseDialogSuccess()
+    {
+        await formJS.InvokeVoidAsync("myScripts.closeModal", "dialogValidSuccess");
+        Nav.NavigateTo("/");
+    }
+
+    private async Task HandleInvalidSubmit()
+    {
+        await formJS.InvokeVoidAsync("myScripts.showModal", "dialogInvalid");
+      
+    }
+
+
+    private async Task CloseDialog()
+    {
+        await formJS.InvokeVoidAsync("myScripts.closeModal", "dialogInvalid");
+    }
+
+}

@@ -1,0 +1,35 @@
+﻿@using BlazorFirstStepApp.Models
+@using BlazorFirstStepApp.Layout
+@inherits LayoutComponentBase
+
+<CascadingValue Value="CurrentTheme">
+    <div class="page @CurrentTheme.BgClass" style="min-height: 100vh; transition: background-color 0.3s;">
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+                <div class="col-12 top-row bg-color px-1">
+                <button class="btn @CurrentTheme.ButtonClass" @onclick="ToggleTheme">
+                    Przełącz na @(CurrentTheme.IsDarkMode ? "Jasny" : "Ciemny")
+                </button>
+        </div>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+    </div>
+    </CascadingValue>
+
+
+@code {
+    ThemeSettings CurrentTheme = new ThemeSettings { IsDarkMode = true };
+
+    void ToggleTheme()
+    {
+        CurrentTheme.IsDarkMode = !CurrentTheme.IsDarkMode;
+        StateHasChanged();
+    }
+}

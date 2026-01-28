@@ -1,0 +1,26 @@
+﻿<div class="mb-3">
+    <label for="login" class="form-label">@Label</label>
+    <input id="login" class="form-control"
+           @bind:get="Value"
+           @bind:set="OnInputChanged"
+           @bind:event="oninput" />
+</div>
+
+@code {
+    [Parameter] 
+
+    public string Value { get; set; } = "";
+    [Parameter] 
+
+    public string Label { get; set; } = "";
+
+
+    [Parameter] 
+    public EventCallback<string> OnChanged { get; set; }
+
+    private async Task OnInputChanged(string newValue)
+    {
+        Value = newValue; 
+        await OnChanged.InvokeAsync(newValue);
+    }
+}
