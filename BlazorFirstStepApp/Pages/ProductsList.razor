@@ -1,8 +1,8 @@
 ﻿@page "/productsList"
 
-<PageTitle>Produkty</PageTitle>
+<PageTitle>Lista zdjęć</PageTitle>
 
-<h2 class="mb-3">Produkty</h2>
+<h2 class="mb-3">Lista zdjęć do kupienia</h2>
 
 <div class="container">
     <div class="row g-4"> 
@@ -41,7 +41,7 @@
             Products.Add(new Product
             {
                 Id = i,
-                Name = $"Produkt Testowy {i}",
+                Name = $"Zdjęcie {i}",
                 Index = $"IDX-{1000 + i}",
                 Price = 10.99m * i,
                 Stock = i + 5,
