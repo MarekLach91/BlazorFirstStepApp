@@ -3,9 +3,9 @@
 @inject NavigationManager Nav
 
 
-<PageTitle>Historia zakupów</PageTitle>
+<PageTitle>Historia transakcji</PageTitle>
 
-<h3 class="mb-5">Historia transakcji Kontrahenta o id: @Id </h3>
+<h2 class="mb-2">Historia transakcji Kontrahenta o id: @Id </h2>
 
 
 <div class="mb-5">
@@ -42,7 +42,7 @@
             <div class="mt-2">Znaleziono: @(FilteredTransactions?.Count ?? 0) transakcji.</div>
         }
     </div>
-    <div class="mb-2">
+    <div class="mb-2 table-hight">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -53,15 +53,15 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in FilteredTransactions)
-                {
-                    <tr>
+          <Virtualize Items="@FilteredTransactions" Context="item" OverscanCount="4">
+                    <tr @key="item.Id">
                         <td>@item.Id</td>
                         <td>@item.FirstName @item.LastName</td>
                         <td>@item.Date.ToShortDateString()</td>
                         <td>@item.Amount.ToString("C")</td>
                     </tr>
-                }
+
+                </Virtualize>
             </tbody>
         </table>
     </div>
