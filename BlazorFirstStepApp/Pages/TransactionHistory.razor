@@ -53,15 +53,15 @@
                 </tr>
             </thead>
             <tbody>
-          <Virtualize Items="@FilteredTransactions" Context="item" OverscanCount="4">
-                    <tr @key="item.Id">
+           @foreach (var item in FilteredTransactions)
+    {
+                    <tr @key="item.Id" class="row-hight">
                         <td>@item.Id</td>
                         <td>@item.FirstName @item.LastName</td>
                         <td>@item.Date.ToShortDateString()</td>
                         <td>@item.Amount.ToString("C")</td>
                     </tr>
-
-                </Virtualize>
+    }
             </tbody>
         </table>
     </div>
