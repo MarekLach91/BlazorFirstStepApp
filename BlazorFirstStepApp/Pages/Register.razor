@@ -54,9 +54,11 @@
     {
 
         [Required(ErrorMessage = "Login jest wymagany")]
+        [MinLength(3)]
         public string Username { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Hasło jest wymagane")]
+        [MinLength(6)]
         public string Password { get; set; } = string.Empty;
     }
 
