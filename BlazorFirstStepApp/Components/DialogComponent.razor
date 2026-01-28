@@ -26,7 +26,6 @@
 
     private async Task CloseAction()
     {
-        await JS.InvokeVoidAsync("myScripts.closeModal", Id);
-        await CloseActionChanged.InvokeAsync(); 
+        await CloseActionChanged.InvokeAsync(Id); 
     }
 }
