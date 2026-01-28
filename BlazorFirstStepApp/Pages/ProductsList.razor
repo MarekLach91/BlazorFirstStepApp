@@ -1,0 +1,53 @@
+﻿@page "/productsList"
+
+<PageTitle>Produkty</PageTitle>
+
+<h2 class="mb-3">Produkty</h2>
+
+<div class="container">
+    <div class="row g-4"> 
+        @foreach (var prod in Products)
+        {
+            <div class="col-12 col-md-6 col-lg-3">
+                @* Wywołanie Twojego komponentu *@
+                <ProductComponent Title="@prod.Name" 
+                               ProductIndex="@prod.Index" 
+                               Price="@prod.Price" 
+                               Amount="@prod.Stock" 
+                               ImgUrl="@prod.Image" 
+                               ImgTitle="@prod.Name" />
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    public class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public string Index { get; set; } = "";
+        public decimal Price { get; set; }
+        public int Stock { get; set; }
+        public string Image { get; set; } = "";
+    }
+
+    private List<Product> Products = new();
+
+    protected override void OnInitialized()
+    {
+
+        for (int i = 1; i <= 20; i++)
+        {
+            Products.Add(new Product
+            {
+                Id = i,
+                Name = $"Produkt Testowy {i}",
+                Index = $"IDX-{1000 + i}",
+                Price = 10.99m * i,
+                Stock = i + 5,
+                Image = $"https://picsum.photos/seed/{i}/200/200"
+            });
+        }
+    }
+}

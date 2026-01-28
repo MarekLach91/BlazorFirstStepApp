@@ -1,0 +1,31 @@
+﻿<div class="border border-success p-1">
+    <h5 class="fw-bold">Nazwa: @Title</h5>
+    <p class="my-2">Index: @ProductIndex</p>
+    <img class="d-block mx-auto" src="@ImgUrl" alt="@ImgTitle" width="200" height="200" />
+    <p class="my-2">Cena: @Price</p>
+    <p class="my-2">Ilość dostępna: @Amount</p>
+</div>
+
+
+@code
+{
+    [Parameter]
+    public string Title { get; set; } = "";
+
+    [Parameter]
+    public string ProductIndex { get; set; } = "";
+
+    [Parameter]
+    public string ImgUrl { get; set; } = "";
+
+    [Parameter]
+    public string ImgTitle { get; set; } = "";
+
+    [Parameter]
+    public decimal Price { get; set; }
+
+    [Parameter]
+    public int Amount { get; set; } 
+
+
+}

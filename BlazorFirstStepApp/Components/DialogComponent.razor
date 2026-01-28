@@ -21,7 +21,8 @@
 
     public RenderFragment? ChildContent { get; set; }
 
-    [Parameter] public EventCallback<string> CloseActionChanged { get; set; }
+    [Parameter] 
+    public EventCallback<string> CloseActionChanged { get; set; }
 
 
     private async Task CloseAction()
